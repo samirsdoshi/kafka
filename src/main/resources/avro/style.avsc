@@ -1,0 +1,27 @@
+{
+    "type": "record",
+    "name": "Style",
+    "namespace": "com.example.demoprocessor",
+    "fields": [
+    {
+        "name": "brand",
+        "type": "string"
+    },
+    {
+        "name": "market",
+        "type": "string"
+    },
+    {
+        "name": "channel",
+        "type": "string"
+    },
+    {
+        "name": "styleId",
+        "type": "string"
+    },
+    {
+        "name": "description",
+        "type": "string"
+    }
+    ]
+}

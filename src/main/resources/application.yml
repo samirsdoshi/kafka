@@ -1,5 +1,7 @@
 spring:
   cloud:
+    function:
+      definition: processStyle;processStyleBatch
     config:
       enabled: false
     stream:
@@ -12,6 +14,16 @@ spring:
             backOffInitialInterval: 1000
             backOffMultipler: 2
             backOffMaxInterval: 8000
+        processStyleBatch-in-0:
+          destination: TP.STYLE.BATCH
+          content-type: application/*+avro
+          group: CG.STYLE.BATCH
+          consumer:
+            maxAttempts: 3
+            backOffInitialInterval: 1000
+            backOffMultipler: 2
+            backOffMaxInterval: 8000
+            batchMode: true
       kafka:
         binder:
           brokers: localhost:9092
@@ -20,14 +32,31 @@ spring:
             value.deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
             basic.auth.user.info:
             spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
-            spring.deserializer.value.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
+            spring.deserializer.value.delegate.class:  io.confluent.kafka.serializers.KafkaAvroDeserializer
+            schema.registry.url: http://localhost:8081
+            specific.avro.reader: true
           producer:
             key-serializer: org.apache.kafka.common.serialization.StringSerializer
-            value-serializer: org.apache.kafka.common.serialization.StringSerializer
+            value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+            schema.registry.url: http://localhost:8081
+          schema.registry:
+            url: https://localhost:8081
         bindings:
           processStyle-in-0:
             consumer:
               enableDlq: false
               autoCommitOffset: false
             contentType: application/json
+          processStyleBatch-in-0:
+            consumer:
+              configuration:
+                max.poll.records: 10
+                fetch.min.bytes: 10000
+                #fetch.max.bytes: 200000
+                fetch.max.wait.ms: 10000
+                #max.partition.fetch.bytes: 2000000
+              enableDlq: false
+              autoCommitOffset: false
+              contentType: application/json
+
 
