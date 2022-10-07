@@ -30,12 +30,15 @@ public class StyleProcessor {
         };
     }
 
-//    @Bean
-//    public Consumer<KStream<String, StyleDTO>> processStyleKStream() {
-//        return message-> {
-//            message.peek((k,v)->System.out.println("Got:" + v.toJSON()));
-//        };
-//    }
+    @Bean
+    public Consumer<KStream<String, ?>> processStyleKStream() {
+        return message-> {
+            message.peek((k,v)->{
+                StyleDTO styleDTO = StyleDTO.fromJSON(v.toString());
+                System.out.println("Got:" + styleDTO.toJSON());
+            });
+        };
+    }
 
     @Bean
     public Consumer<Message<List<?>>> processStyleBatch(){

@@ -3,7 +3,9 @@ spring:
     config:
       enabled: false
     function:
-      definition: processStyle;processStyleKStream;processStyleBatch
+      definition: processStyleKStream
+    stream:
+      #default-binder: kafka
       bindings:
         processStyleKStream-in-0:
           destination: TP.STYLE
@@ -33,9 +35,14 @@ spring:
             backOffMultipler: 2
             backOffMaxInterval: 8000
             batchMode: true
-    stream:
-      default-binder: kafka
       kafka.streams:
+        binder:
+          auto-create-topics: false
+          brokers: localhost:9092
+          configuration:
+            #default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+            #default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+            schema.registry.url: http://localhost:8081
         bindings:
           processStyleKStream-in-0:
             consumer:
@@ -43,7 +50,10 @@ spring:
               content-type: application/*+avro
               group: CG.STYLE.STREAM
               enableDlq: false
-              autoCommitOffset: false
+              autoCommitOffset: true
+              key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
+              value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+              #useNativeDecoding: true
           processStyle-in-0:
             consumer:
               destination: TP.STYLE
@@ -65,21 +75,5 @@ spring:
                 enableDlq: false
                 autoCommitOffset: false
               contentType: application/json
-        binder:
-          auto-create-topics: false
-          brokers: localhost:9092
-          consumerProperties:
-            key.deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-            value.deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
-            basic.auth.user.info:
-            spring.deserializer.key.delegate.class: org.apache.kafka.common.serialization.StringDeserializer
-            spring.deserializer.value.delegate.class: io.confluent.kafka.serializers.KafkaAvroDeserializer
-            schema.registry.url: http://localhost:8081
-            specific.avro.reader: true
-          producer:
-            key-serializer: org.apache.kafka.common.serialization.StringSerializer
-            value.serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-            schema.registry.url: http://localhost:8081
-          schema.registry:
-            url: https://localhost:8081
+
 
