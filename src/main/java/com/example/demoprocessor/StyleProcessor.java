@@ -21,11 +21,11 @@ public class StyleProcessor {
     private static final Log logger = LogFactory.getLog(StyleProcessor.class);
 
     @Bean
-    public Consumer<Message<KStream<String, StyleDTO>>> processStyle() {
+    public Consumer<Message<?>> processStyle() {
         return message-> {
             Acknowledgment acknowledgment = message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT,
                     Acknowledgment.class);
-            System.out.println("ProcessStyle1 got:" +  message.getPayload().peek((k,v)->v.toJSON()) + ", headers:" + message.getHeaders());
+            System.out.println("ProcessStyle1 got:" +  message.getPayload().toString() + ", headers:" + message.getHeaders());
             acknowledgment.acknowledge();
         };
     }

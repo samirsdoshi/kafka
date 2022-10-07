@@ -3,7 +3,7 @@ spring:
     config:
       enabled: false
     function:
-      definition: processStyleKStream
+      definition: processStyle;processStyleKStream
     stream:
       #default-binder: kafka
       bindings:
@@ -40,8 +40,8 @@ spring:
           auto-create-topics: false
           brokers: localhost:9092
           configuration:
-            #default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
-            #default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+            default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+            default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
             schema.registry.url: http://localhost:8081
         bindings:
           processStyleKStream-in-0:
@@ -51,9 +51,9 @@ spring:
               group: CG.STYLE.STREAM
               enableDlq: false
               autoCommitOffset: true
-              key.deserializer: org.apache.kafka.common.serialization.StringDeserializer
-              value.deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-              #useNativeDecoding: true
+              key-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+              value-serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+              useNativeDecoding: true
           processStyle-in-0:
             consumer:
               destination: TP.STYLE
@@ -61,6 +61,7 @@ spring:
               group: CG.STYLE
               enableDlq: false
               autoCommitOffset: false
+              useNativeDecoding: true
           processStyleBatch-in-0:
             consumer:
               destination: TP.STYLE.BATCH

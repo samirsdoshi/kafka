@@ -53,7 +53,7 @@ dependencies {
 
 	implementation 'org.apache.kafka:kafka-streams'
 	implementation 'org.springframework.cloud:spring-cloud-stream'
-	//implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
+	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'
 	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka-streams'
 
 	implementation 'io.confluent:kafka-avro-serializer:5.3.2'
