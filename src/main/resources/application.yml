@@ -3,7 +3,7 @@ spring:
     config:
       enabled: false
     function:
-      definition: processStyle;processStyleKStream
+      definition: processStyle;processStyleKStream;processStyleBatch
     stream:
       #default-binder: kafka
       bindings:
@@ -46,36 +46,9 @@ spring:
         bindings:
           processStyleKStream-in-0:
             consumer:
-              destination: TP.STYLE
-              content-type: application/*+avro
-              group: CG.STYLE.STREAM
-              enableDlq: false
-              autoCommitOffset: true
               key-serde: org.apache.kafka.common.serialization.Serdes$StringSerde
               value-serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
               useNativeDecoding: true
-          processStyle-in-0:
-            consumer:
-              destination: TP.STYLE
-              content-type: application/*+avro
-              group: CG.STYLE
-              enableDlq: false
-              autoCommitOffset: false
-              useNativeDecoding: true
-          processStyleBatch-in-0:
-            consumer:
-              destination: TP.STYLE.BATCH
-              content-type: application/*+avro
-              group: CG.STYLE.BATCH
-              configuration:
-                max.poll.records: 10
-                fetch.min.bytes: 10000
-                #fetch.max.bytes: 200000
-                fetch.max.wait.ms: 10000
-                #max.partition.fetch.bytes: 2000000
-                enableDlq: false
-                autoCommitOffset: false
-              contentType: application/json
       kafka:
         binder:
           brokers: localhost:9092

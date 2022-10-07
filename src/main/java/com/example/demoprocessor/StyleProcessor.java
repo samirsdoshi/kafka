@@ -3,6 +3,7 @@ package com.example.demoprocessor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.kafka.streams.kstream.KStream;
+import org.springframework.cloud.stream.config.SpringIntegrationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.support.Acknowledgment;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 
 @Component
@@ -45,13 +47,17 @@ public class StyleProcessor {
         return message ->{
             try {
                 System.out.println("Headers:" + message.getHeaders());
-                message.getPayload().forEach(style -> {
-                    StyleDTO styleDTO = StyleDTO.fromJSON(style.toString());
+                IntStream.range(0,message.getPayload().size()).forEach(idx ->{;
+                    StyleDTO styleDTO = StyleDTO.fromJSON(message.getPayload().get(idx).toString());
                     System.out.println("got:" + styleDTO.toJSON());
+                    if (idx==5){
+                        throw new RuntimeException("Testing");
+                    }
                 });
                 message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT, Acknowledgment.class).acknowledge();
             }catch(Exception e){
-
+               System.out.println(e.getMessage());
+               throw e;
             }
         };
     }
