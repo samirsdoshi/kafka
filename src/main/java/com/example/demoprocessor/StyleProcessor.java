@@ -6,9 +6,12 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.springframework.cloud.stream.config.SpringIntegrationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
+import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 
@@ -40,6 +43,12 @@ public class StyleProcessor {
                 System.out.println("ProcessStyleKStream Got:" + styleDTO.toJSON());
             });
         };
+    }
+
+    @KafkaListener(id = "kListener", topics = "TP.STYLE")
+    public void listen(@Payload(required = false) com.example.demoprocessor.Style v, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key) {
+        StyleDTO styleDTO = StyleDTO.fromJSON(v.toString());
+        System.out.println("kafkaListener Got:" + styleDTO.toJSON() + ", key:" + key);
     }
 
     @Bean
