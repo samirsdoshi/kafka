@@ -25,7 +25,7 @@ public class StyleProcessor {
         return message-> {
             Acknowledgment acknowledgment = message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT,
                     Acknowledgment.class);
-            System.out.println("ProcessStyle1 got:" +  message.getPayload().toString() + ", headers:" + message.getHeaders());
+            System.out.println("ProcessStyle got:" +  message.getPayload().toString() + ", headers:" + message.getHeaders());
             acknowledgment.acknowledge();
         };
     }
@@ -35,7 +35,7 @@ public class StyleProcessor {
         return message-> {
             message.peek((k,v)->{
                 StyleDTO styleDTO = StyleDTO.fromJSON(v.toString());
-                System.out.println("Got:" + styleDTO.toJSON());
+                System.out.println("ProcessStyleKStream Got:" + styleDTO.toJSON());
             });
         };
     }
