@@ -21,7 +21,7 @@ import org.springframework.retry.policy.SimpleRetryPolicy;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -55,9 +55,7 @@ public class StyleProcessor {
         };
     }
 
-    @KafkaListener(id = "kListener", topics = "TP.STYLE", properties = {
-            ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG + "=io.confluent.kafka.serializers.KafkaAvroDeserializer)"
-    })
+    @KafkaListener(id = "kListener", topics = "TP.STYLE")
     public void listen(@Payload(required = false) com.example.demoprocessor.Style v, @Header(KafkaHeaders.RECEIVED_MESSAGE_KEY) String key) {
         StyleDTO styleDTO = StyleDTO.fromJSON(v.toString());
         System.out.println("kafkaListener Got:" + styleDTO.toJSON() + ", key:" + key);
