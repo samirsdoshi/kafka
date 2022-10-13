@@ -1,6 +1,7 @@
 package com.example.demoprocessor;
 
 import com.example.demoprocessor.exceptions.DemoRetryableException;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.util.ByteArrayBuffer;
@@ -36,17 +37,20 @@ public class StyleProcessor {
         return message-> {
             Acknowledgment acknowledgment = message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT,
                     Acknowledgment.class);
-            if (true) {
-                //simulate retry. fail for 2 times and succeed on 3rd attempt
-                AtomicInteger retry=(AtomicInteger)message.getHeaders().get("deliveryAttempt");
-                if (retry!=null && retry.get() < 3){
-                    System.out.println("Throwing exception retry count " + retry.get());
-                    throw new DemoRetryableException("test");
-                }
-            }
+            processMessage(message);
             System.out.println("ProcessStyle got:" +  message.getPayload().toString() + ", headers:" + message.getHeaders());
             acknowledgment.acknowledge();
         };
+    }
+
+    @Retry(name="demoretry")
+    private void processMessage(Message<?> message) {
+        //simulate retry. fail for 2 times and succeed on 3rd attempt
+        AtomicInteger retry=(AtomicInteger) message.getHeaders().get("deliveryAttempt");
+        if (retry!=null && retry.get() < 3){
+            System.out.println("Throwing exception retry count " + retry.get());
+            throw new DemoRetryableException("test");
+        }
     }
 
     @Bean

@@ -83,3 +83,15 @@ spring:
               autoCommitOffset: false
               #contentType: application/json
 
+resilience4j.retry:
+  retryAspectOrder: 1
+  configs:
+    default:
+      maxAttempts: 3
+      waitDuration: 500
+      retryExceptions:
+        - com.example.demoprocessor.exceptions.DemoRetryableException
+  instances:
+    demoretry:
+      baseConfig: default
+

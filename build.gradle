@@ -69,6 +69,8 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/io.confluent/kafka-serde-tools-package
 	implementation group: 'io.confluent', name: 'kafka-serde-tools-package', version: '6.0.2', ext: 'pom'
+	compile 'io.github.resilience4j:resilience4j-spring-boot2:1.7.0'
+	compile('org.springframework.boot:spring-boot-starter-aop')
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 
