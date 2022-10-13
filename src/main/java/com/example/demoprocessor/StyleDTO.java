@@ -39,4 +39,11 @@ public class StyleDTO {
         Gson g=new Gson();
         return g.toJson(this);
     }
+    public StyleDTO(com.example.test.Style style){
+        this.brand = style.getBrand();
+        this.market = style.getMarket();
+        this.channel = style.getChannel();
+        this.styleId = style.getStyleId();
+        this.description = style.getDescription();
+    }
 }

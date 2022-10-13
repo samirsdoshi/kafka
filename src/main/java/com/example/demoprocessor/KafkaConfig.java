@@ -76,9 +76,12 @@ public class KafkaConfig {
 
     BackOff backOff=new FixedBackOff(0L, 2L);
    // DefaultErrorHandler errorHandler = new StyleBatchErrorHandler(recoverer, backOff);
-    DefaultErrorHandler errorHandler= new DefaultErrorHandler((record, exception) -> {
-       // recover after 3 failures, with no back off - e.g. send to a dead-letter topic
-       System.out.println("Recovering:" + record.value().toString());
+    DefaultErrorHandler errorHandler= new DefaultErrorHandler(new ConsumerRecordRecoverer() {
+       @Override
+       public void accept(ConsumerRecord<?, ?> record, Exception exception) {
+           // recover after 3 failures, with no back off - e.g. send to a dead-letter topic
+           System.out.println("Recovering:" + record.value().toString());
+       }
    }, backOff);
 
 

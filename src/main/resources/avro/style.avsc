@@ -1,7 +1,7 @@
 {
     "type": "record",
     "name": "Style",
-    "namespace": "com.example.demoprocessor",
+    "namespace": "com.example.test",
     "fields": [
     {
         "name": "brand",

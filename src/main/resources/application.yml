@@ -84,5 +84,5 @@ spring:
                 #max.partition.fetch.bytes: 2000000
               enableDlq: false
               autoCommitOffset: false
-              contentType: application/json
+              #contentType: application/json
 
