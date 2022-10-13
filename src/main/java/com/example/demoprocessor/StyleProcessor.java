@@ -39,7 +39,7 @@ public class StyleProcessor {
             if (true) {
                 //simulate retry. fail for 2 times and succeed on 3rd attempt
                 AtomicInteger retry=(AtomicInteger)message.getHeaders().get("deliveryAttempt");
-                if (retry.get() < 3){
+                if (retry!=null && retry.get() < 3){
                     System.out.println("Throwing exception retry count " + retry.get());
                     throw new DemoRetryableException("test");
                 }

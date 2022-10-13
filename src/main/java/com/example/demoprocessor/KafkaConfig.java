@@ -74,7 +74,7 @@ public class KafkaConfig {
         };
     }
 
-    BackOff backOff=new FixedBackOff(0L, 2L);
+    BackOff backOff=new FixedBackOff(0L, 0L);
    // DefaultErrorHandler errorHandler = new StyleBatchErrorHandler(recoverer, backOff);
     DefaultErrorHandler errorHandler= new DefaultErrorHandler(new ConsumerRecordRecoverer() {
        @Override

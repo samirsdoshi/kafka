@@ -23,10 +23,7 @@ spring:
           content-type: application/*+avro
           group: CG.STYLE
           consumer:
-            maxAttempts: 3
-            backOffInitialInterval: 1000
-            backOffMultipler: 2
-            backOffMaxInterval: 8000
+            maxAttempts: 2
         processStyleBatch-in-0:
           destination: TP.STYLE.BATCH
           content-type: application/*+avro
