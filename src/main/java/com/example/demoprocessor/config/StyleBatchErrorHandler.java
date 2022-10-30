@@ -1,4 +1,4 @@
-package com.example.demoprocessor;
+package com.example.demoprocessor.config;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

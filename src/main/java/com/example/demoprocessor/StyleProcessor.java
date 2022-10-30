@@ -1,7 +1,9 @@
 package com.example.demoprocessor;
 
 import com.example.demoprocessor.exceptions.DemoRetryableException;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.util.ByteArrayBuffer;
@@ -17,6 +19,7 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,24 +30,33 @@ import static org.springframework.kafka.support.KafkaHeaders.DELIVERY_ATTEMPT;
 
 
 @Component
-@Service
 public class StyleProcessor {
 
     private static final Log logger = LogFactory.getLog(StyleProcessor.class);
+    @Resource
+    StyleService styleService;
 
     @Bean
-    public Consumer<Message<?>> processStyle() {
+    public Consumer<Message<com.example.test.Style>> processStyle() {
         return message-> {
             Acknowledgment acknowledgment = message.getHeaders().get(KafkaHeaders.ACKNOWLEDGMENT,
                     Acknowledgment.class);
-            processMessage(message);
-            System.out.println("ProcessStyle got:" +  message.getPayload().toString() + ", headers:" + message.getHeaders());
-            acknowledgment.acknowledge();
+            try {
+                System.out.println("ProcessStyle got:" + message.getPayload().toString() + ", headers:" + message.getHeaders());
+                styleService.processMessageCB(message);
+                acknowledgment.acknowledge();
+            }catch(Exception e){
+                Throwable exception = ExceptionUtils.getRootCause(e);
+                if (e instanceof DemoRetryableException) {
+                    acknowledgment.nack(5000);
+                }else {
+                    throw e;
+                }
+            }
         };
     }
 
-    @Retry(name="demoretry")
-    private void processMessage(Message<?> message) {
+    private void processMessageRerty(Message<?> message) {
         //simulate retry. fail for 2 times and succeed on 3rd attempt
         AtomicInteger retry=(AtomicInteger) message.getHeaders().get("deliveryAttempt");
         if (retry!=null && retry.get() < 3){
@@ -52,6 +64,7 @@ public class StyleProcessor {
             throw new DemoRetryableException("test");
         }
     }
+
 
     @Bean
     public Consumer<KStream<String, com.example.test.Style>> processStyleKStream() {

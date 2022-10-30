@@ -48,6 +48,7 @@ dependencies {
 	implementation('org.springframework.cloud:spring-cloud-starter-config')
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	//implementation('org.springframework.boot:spring-boot-starter-aop')
 
 	//implementation 'org.springframework.kafka:spring-kafka'
 
@@ -69,8 +70,13 @@ dependencies {
 
 	// https://mvnrepository.com/artifact/io.confluent/kafka-serde-tools-package
 	implementation group: 'io.confluent', name: 'kafka-serde-tools-package', version: '6.0.2', ext: 'pom'
-	compile 'io.github.resilience4j:resilience4j-spring-boot2:1.7.0'
-	compile('org.springframework.boot:spring-boot-starter-aop')
+	implementation 'io.github.resilience4j:resilience4j-spring-boot2:1.7.0'
+	implementation 'net.logstash.logback:logstash-logback-encoder:6.3'
+
+	implementation group: 'org.aspectj', name: 'aspectjweaver', version: '1.9.9.1'
+	// https://mvnrepository.com/artifact/org.aspectj/aspectjrt
+	implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.9.9.1'
+
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 

@@ -22,8 +22,6 @@ spring:
           destination: TP.STYLE
           content-type: application/*+avro
           group: CG.STYLE
-          consumer:
-            maxAttempts: 2
         processStyleBatch-in-0:
           destination: TP.STYLE.BATCH
           content-type: application/*+avro
@@ -84,7 +82,7 @@ spring:
               #contentType: application/json
 
 resilience4j.retry:
-  retryAspectOrder: 1
+  retryAspectOrder: 2
   configs:
     default:
       maxAttempts: 3
@@ -95,3 +93,19 @@ resilience4j.retry:
     demoretry:
       baseConfig: default
 
+
+resilience4j.circuitbreaker:
+  circuitBreakerAspectOrder: 1
+  instances:
+    styleCB:
+      slidingWindowType: COUNT_BASED
+      minimumNumberOfCalls: 1
+      permittedNumberOfCallsInHalfOpenState: 1
+      failureRateThreshold: 50
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      slidingWindowSize: 1
+      waitDurationInOpenState: 5s
+      registerHealthIndicator: true
+      eventConsumerBufferSize: 10
+      recordException:
+        - com.example.demoprocessor.exceptions.DemoRetryableException

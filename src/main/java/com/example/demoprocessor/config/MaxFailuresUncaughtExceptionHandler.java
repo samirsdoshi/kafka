@@ -1,4 +1,4 @@
-package com.example.demoprocessor;
+package com.example.demoprocessor.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.common.errors.RetriableException;
